@@ -1,4 +1,4 @@
-/*
+u/*
  This sketch controls the operation of double sided 
  UV exposure box for making printed circuit boards.
  Exposure time is controlled. PCB is squeezed between the windows using a vacuum pump.
@@ -152,7 +152,7 @@ int rotary(int param) {
   }
 }
 
-    /* The vacuum() function reads the vacuum probe and 
+    /* The vacuum() function reads the pressure sensor and 
      * adjusts the vacuum using the vacuum pump PWM
      * and updates the display when the LEDs are active.
      * Function modifies the global variable 'press'.
@@ -179,7 +179,7 @@ long AnVal=sensor.read_average(4);  // Read pressure through HX711
      * the actual exposure is started (LEDs on and timer set zero)
      * During the exposure, the vacuum is monitored and adjusted  
      * if necessary. At the same time the run time is measured and
-     * break (Chrome) button monitored.
+     * stop (Chrome) button monitored.
      */
 void expose() {
   int RunTime=0;
