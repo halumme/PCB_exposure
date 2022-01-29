@@ -1,11 +1,11 @@
 /*
- This sketch controls the operation of doubls sided 
+ This sketch controls the operation of double sided 
  UV exposure box for making printed circuit boards.
  Exposure time is controlled. PCB is squeezed between the windows using a vacuum pump.
  Vacuum is controlled with a pressure sensor driving a DC air pump.
  UV LED array is controlled using one DO line for each side.
  Process parameters (time, vacuum) are permanently stored in EEPROM.
- Harri Lumme 25.3.2020 Init
+ haumme 25.3.2020 Init
  29.3.2020 meat on bones
  6.4.2020 major rewrite
  12.4.2020 Finalize and review the code
