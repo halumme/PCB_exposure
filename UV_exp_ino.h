@@ -1,4 +1,4 @@
-u/*
+/*
  This sketch controls the operation of double sided 
  UV exposure box for making printed circuit boards.
  Exposure time is controlled. PCB is squeezed between the windows using a vacuum pump.
@@ -24,7 +24,7 @@ u/*
 */
 HX711 sensor(A0, A1, 32);
 LiquidCrystal lcd(10,11,3,4,5,6); // LCD pins
-int dblSide = 0;   // Single side as default
+int dblSide = 0;   // Single side as default. Bottom LEDs (lowLED) used only
 int prevBut, prevA, CumDif, MomDif, PrevDif ;
 int lowLED = 12;
 int highLED = 13;
