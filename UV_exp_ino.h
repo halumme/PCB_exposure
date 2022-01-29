@@ -17,7 +17,7 @@
 #include <HX711.h>
 #include <PWM.h>
 #define PumpPin 9
-#define Chrome 7
+#define Chrome 7 // Start/Stop button is called Chrome due to its appearance
 
 /* HX711 resistance bridge module is used to read
  * the pressure sensor, originally designed for scales.
@@ -46,7 +46,7 @@ int State = 0;
    * 0 => Stand by / Ready
    * 1 => Setup time
    * 2 => Setup vacuum
-   * 3 => Choose 1- or 2-sided
+   * 3 => Select 1- or 2-sided
    * 4 => Exposure on
    */
    
@@ -64,14 +64,14 @@ void setup() {
   pinMode(highLED, OUTPUT);
   InitTimersSafe();
   SetPinFrequencySafe(PumpPin, 5500);
-  String alku = "*** UV EXP";
-  String loppu = "OSURE  ***";
+  String titl1 = "*** UV EXP";
+  String titl2 = "OSURE  ***";
   String space = "  ";
-  for(int i=1;i<=10;i++){
+  for(int i=1;i<=10;i++){  // Scroll the title text in from both sides
     lcd.setCursor(0,0);
-    lcd.print(alku.substring(10-i));
+    lcd.print(titl1.substring(10-i));
     for (int j = 1; j<=(10-i); j++) lcd.print(space);
-    lcd.print(loppu.substring(0,i));
+    lcd.print(titl2.substring(0,i));
     delay(180);
   }  
   VacSPoint  = EEPROM.read(11)+256*EEPROM.read(12); // LSB + MSB
@@ -85,7 +85,7 @@ void setup() {
   lcd.print("Vacuum ");
   lcd.print(VacSPoint);
   lcd.setCursor(11,2);
-  lcd.print("hPa"); 
+  lcd.print("hPa");  // Vacuum unit is hPa which equals mbar
   zero = sensor.read_average(8);
  }
 
@@ -119,34 +119,34 @@ int button(int pinNro){
     */
 int rotary(int param) {
   int enCodA = digitalRead(RotA);
-  int muutos;
+  int pulse;
   if (enCodA != prevA){       // change has happened
     lastpush=millis();
     if (digitalRead(RotB) != enCodA){ // Clockwise change
-      muutos = 1;
+      pulse = 1;
     } else{
-      muutos = -1;
+      pulse = -1;
     }
     prevA = enCodA;
     switch (param){ // Modify and display requested parameter
       case 1:
-      TimeSPoint += muutos;
+      TimeSPoint += pulse;
       lcd.setCursor(7,1);
       lcd.print(TimeSPoint);
       lcd.print(" ");
       break;
       
       case 2:
-      VacSPoint += muutos;
+      VacSPoint += pulse;
       lcd.setCursor(7,2);
       lcd.print(VacSPoint);
       lcd.print(" ");
       break;
 
       case 3:
-      dblSide = (muutos > 0);
+      dblSide = (pulse > 0);
       lcd.setCursor(19,3);
-      lcd.print(dblSide+1); // number or custom character??
+      lcd.print(dblSide+1); // number 1 or 2
       break;
     }
   }
@@ -171,15 +171,15 @@ long AnVal=sensor.read_average(4);  // Read pressure through HX711
     pwmWrite(PumpPin, Cont);
     lcd.setCursor(15,2);
   lcd.print(press);
-  lcd.print(" ");
+  lcd.print(" "); // clears trailing space when changing from 100 to 99 or 10 to 9
 }
 
     /* The expose() function controls the exposure routine
      * First, the initial vacuum is applied after which
-     * the actual exposure is started (LEDs on and timer zeroing)
+     * the actual exposure is started (LEDs on and timer set zero)
      * During the exposure, the vacuum is monitored and adjusted  
      * if necessary. At the same time the run time is measured and
-     * break button monitored.
+     * break (Chrome) button monitored.
      */
 void expose() {
   int RunTime=0;
@@ -187,13 +187,13 @@ void expose() {
     vacuum();   // Start the pump and wait (delay??)
   } while (press < VacSPoint); // until the set level of vacuum is achieved
   
-  startms = millis();     // kirjaa aloitusaika
+  startms = millis();         // record the start time
   digitalWrite(lowLED, HIGH); // Switch on the lower bank of LEDs
   if (dblSide) digitalWrite(highLED, HIGH); // also the upper bank of LEDs
   
   do {
     RunTime = (millis()-startms)/1000;
-    vacuum();   // Update bar display
+    vacuum();   // Update pressure display
     lcd.setCursor(15,1);
     lcd.print(TimeSPoint-Runtime);
     lcd.print(" ");
@@ -214,17 +214,17 @@ void loop() {
     break;
     
     case 1:
-    rotary(1); // read rotary encoder vacuum set-up
+    rotary(1); // read rotary encoder for vacuum set-up
     if (button(Rot)) State = 2;
     break;
     
     case 2:
-    rotary(2); // read rotary encoder time
+    rotary(2); // read rotary encoder for parameter time
     if (button(Rot)) State = 3;
     break;
         
     case 3:
-    rotary(3); // read rotary encoder dblSide
+    rotary(3); // read rotary encoder for parameter dblSide
     if (button(Rot)) {    // If button pressed fourth time, write params
       EEPROM.write(11,VacSPoint & 0xff);
       EEPROM.write(12,VacSPoint >> 8);
