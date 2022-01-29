@@ -9,4 +9,4 @@ Main characteristics of the device:
  * PID controlled vacuum is applied to press the pattern against the photoresist resulting in sharp lines and contours.
  * a rotary encoder is used to input run parameters for the exposure
  * a start/stop button controls the run. Stop is used only if needed to stop the exposure before time-out.
- * an Arduinon Nano compatible microcontroller is used. Probably most Arduino flavors will work here.
+ * an Arduino Nano compatible microcontroller is used. Probably most Arduino flavors will work here.
